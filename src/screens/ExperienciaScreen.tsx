@@ -1,21 +1,21 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, TextInput, StyleSheet, ScrollView,
-  KeyboardAvoidingView, Platform, TouchableOpacity,
+  KeyboardAvoidingView, Platform, TouchableOpacity, Linking, ImageBackground,
 } from 'react-native';
-import YoutubeIframe from 'react-native-youtube-iframe';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { typography } from '../theme/typography';
 
 export default function ExperienciaScreen() {
-  const [playing, setPlaying] = useState(false);
   const [notes, setNotes] = useState('');
 
-  const onStateChange = useCallback((state: string) => {
-    if (state === 'ended') setPlaying(false);
-  }, []);
+  const openExternalYouTube = () => {
+    Linking.openURL('https://www.youtube.com/watch?v=EDMeg7Hxr-4').catch((err) =>
+      console.error('Error al abrir URL:', err)
+    );
+  };
 
   return (
     <KeyboardAvoidingView
@@ -56,29 +56,43 @@ export default function ExperienciaScreen() {
             <View style={styles.videoHeader}>
               <View style={styles.videoLiveIndicator}>
                 <View style={styles.videoLiveDot} />
-                <Text style={styles.videoLiveText}>Video</Text>
+                <Text style={styles.videoLiveText}>Video de la Experiencia</Text>
               </View>
               <TouchableOpacity
-                onPress={() => setPlaying(!playing)}
+                onPress={openExternalYouTube}
                 style={styles.playButton}
               >
                 <MaterialCommunityIcons
-                  name={playing ? 'pause-circle' : 'play-circle'}
+                  name="youtube"
                   size={22}
-                  color={colors.primary}
+                  color="#FF0000"
                 />
-                <Text style={styles.playText}>{playing ? 'Pausar' : 'Reproducir'}</Text>
+                <Text style={styles.playText}>Abrir YouTube</Text>
               </TouchableOpacity>
             </View>
 
-            <View style={styles.videoFrame}>
-              <YoutubeIframe
-                height={210}
-                play={playing}
-                videoId={'YOUTUBE_VIDEO_ID'}
-                onChangeState={onStateChange}
-              />
-            </View>
+            <TouchableOpacity
+              style={styles.videoFrame}
+              onPress={openExternalYouTube}
+              activeOpacity={0.9}
+            >
+              <ImageBackground
+                source={{ uri: 'https://i.ytimg.com/vi/EDMeg7Hxr-4/hqdefault.jpg' }}
+                style={styles.thumbnailBackground}
+                resizeMode="cover"
+              >
+                <LinearGradient
+                  colors={['rgba(0,0,0,0.1)', 'rgba(0,0,0,0.7)']}
+                  style={styles.thumbnailOverlay}
+                >
+                  <View style={styles.youtubePlayButton}>
+                    <MaterialCommunityIcons name="play" size={36} color={colors.white} />
+                  </View>
+                  <Text style={styles.thumbnailTitle}>Toca para ver el video</Text>
+                  <Text style={styles.thumbnailSubtitle}>Se abrirá directamente en YouTube</Text>
+                </LinearGradient>
+              </ImageBackground>
+            </TouchableOpacity>
           </View>
 
           {/* Notes Card */}
@@ -186,7 +200,52 @@ const styles = StyleSheet.create({
   videoLiveText: { fontFamily: 'Poppins_600SemiBold', fontSize: 13, color: colors.textSecondary },
   playButton: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   playText: { fontFamily: 'Poppins_600SemiBold', fontSize: 13, color: colors.primary },
+  openAppButton: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  openAppText: { fontFamily: 'Poppins_600SemiBold', fontSize: 13, color: colors.primary },
   videoFrame: { backgroundColor: '#000' },
+  thumbnailBackground: {
+    width: '100%',
+    height: 210,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  thumbnailOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  youtubePlayButton: {
+    width: 64,
+    height: 44,
+    borderRadius: 10,
+    backgroundColor: '#FF0000',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#FF0000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5,
+    marginBottom: 12,
+  },
+  thumbnailTitle: {
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: 15,
+    color: colors.white,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 6,
+  },
+  thumbnailSubtitle: {
+    fontFamily: 'Poppins_400Regular',
+    fontSize: 11,
+    color: 'rgba(255,255,255,0.85)',
+    marginTop: 4,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 6,
+  },
 
   notesCard: {
     backgroundColor: colors.surface,
