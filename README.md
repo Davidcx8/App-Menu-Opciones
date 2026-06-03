@@ -48,6 +48,12 @@ npm run ios
 npm run web
 ```
 
+## Descargar APK
+
+Puedes descargar el APK directamente desde el siguiente enlace:
+
+https://drive.google.com/file/d/1RsxXCif1Ji7Bxashx6_eAhR5vDXGUiN7/view?usp=sharing
+
 ## Estructura principal
 
 - `App.tsx`: punto de entrada principal con carga de fuentes, splash screen y configuración de navegación.
